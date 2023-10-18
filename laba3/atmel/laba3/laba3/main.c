@@ -17,10 +17,10 @@ int main(void)
     while (1) 
     {
 		LCDKursorPosihin(0,0);
-		LDCWriteStr("Temp = ");
+//		LDCWriteStr("Temp = ");
 		
-		LCDWriteInt((int)(TCN75ReadTemp(TCN75ADDRES)>>8));
-		LCDWriteStr(";   ");
+//		LCDWriteInt((int)(TCN75ReadTemp(TCN75ADDRES)>>8));
+//		LCDWriteStr(";   ");
 		
 		_delay_ms(500);
     }

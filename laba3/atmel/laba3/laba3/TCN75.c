@@ -4,6 +4,11 @@
 
 static uint8_t TWIReadWriteByte(_Sequence sequence, uint8_t data);
 
+#define LCD_PORT PORTA
+#define LCD_RS (1<<4)
+#define LCD_E (1<<5)
+#define LCD_MASK 0xC0
+
 uint16_t TCN75ReadTemp(uint8_t adres)
 {
 	adres = TCN75_ADDRES_PREFIX|(adres<<1);
@@ -43,27 +48,3 @@ uint8_t TWIReadWriteByte(_Sequence sequence, uint8_t data)
 	return TWDR;
 }
 
-void LCDKursorPosihin(uint8_t row, uint8_t col)
-{
-	if(!row) {
-		LCDWriteByte(LCD_IR, (1<<7)|col);
-	}
-	else{
-		LCDWriteByte(LCD_IR, (3<<6)|col);
-	}
-}
-
-void LCDInit()
-{
-	DDRA|=~LCD_MASK;
-	LCDWriteByte(LCD_IR, 0x33);
-	_delay_ms(100);
-	LCDWriteByte(LCD_IR, 0x32);
-	_delay_ms(100);
-	LCDWriteByte(LCD_IR, 0x28);
-	_delay_ms(100);
-	LCDWriteByte(LCD_IR, 0x01);
-	_delay_ms(100);
-	LCDWriteByte(LCD_IR, 0x0c);
-	_delay_ms(100);
-}
