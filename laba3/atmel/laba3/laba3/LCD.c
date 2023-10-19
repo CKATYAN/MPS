@@ -61,7 +61,7 @@ void LCDWriteStr(char *data)
 		LCDWriteByte(LCD_DR, data[i]);
 }
 
-void LCDWriteInt(int data)
+void LCDWriteFloat(float data)
 {
 	char* buffer;
 	sprintf(buffer, "%d", data);
