@@ -34,15 +34,15 @@ uint8_t TWIReadWriteByte(_Sequence sequence, uint8_t data)
 			while(!(TWCR&(1<<TWINT)));
 		break;
 		
-				case TWI_Sequence_Body_ACK:
-					TWDR=data;
-					TWCR=(1<<TWEN)|(1<<TWINT)|(1<<TWEA);
-					while (!(TWCR &(1<<TWINT)));
-				break;
+		case TWI_Sequence_Body_ACK:
+			TWDR=data;
+			TWCR=(1<<TWEN)|(1<<TWINT)|(1<<TWEA);
+			while (!(TWCR &(1<<TWINT)));
+		break;
 				
-				case TWI_Sequence_Stop:
-					TWCR=(1<<TWSTO)|(1<<TWEN)|(1<<TWINT);
-				break;
+		case TWI_Sequence_Stop:
+			TWCR=(1<<TWSTO)|(1<<TWEN)|(1<<TWINT);
+		break;
 	}
 	
 	return TWDR;

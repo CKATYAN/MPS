@@ -54,3 +54,20 @@ void LCDKursorPosihin(uint8_t row, uint8_t col)
 		LCDWriteByte(LCD_IR, (3<<6)|col);
 	}
 }
+
+void LCDWriteStr(char *data)
+{
+	for (int i = 0; i < strlen(data); i++)
+		LCDWriteByte(LCD_DR, data[i]);
+}
+
+void LCDWriteInt(int data)
+{
+	char* buffer;
+	sprintf(buffer, "%d", data);
+	for (int i = 0; i < strlen(data); i++)
+	{
+		LCDWriteByte(LCD_DR, buffer[i]);
+	}
+	
+}
