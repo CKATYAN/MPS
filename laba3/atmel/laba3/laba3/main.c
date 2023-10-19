@@ -20,8 +20,9 @@ int main(void)
 //		LDCWriteStr("Temp = ");
 		
 //		LCDWriteInt((int)(TCN75ReadTemp(TCN75ADDRES)>>8));
-//		LCDWriteStr(";   ");
-		
+		LCDWriteStr(";   ");
+		LCDWriteFloat(15.75);
+		LCDWriteInt(1150);
 		_delay_ms(500);
     }
 }

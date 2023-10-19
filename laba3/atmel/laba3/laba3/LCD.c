@@ -61,13 +61,33 @@ void LCDWriteStr(char *data)
 		LCDWriteByte(LCD_DR, data[i]);
 }
 
-void LCDWriteFloat(float data)
+void LCDWriteFloat(float adc_read)
 {
-	char* buffer;
-	sprintf(buffer, "%d", data);
-	for (int i = 0; i < strlen(data); i++)
+	char str[100];
+
+	char *tmpSign = (adc_read < 0) ? "-" : "";
+	float tmpVal = (adc_read < 0) ? -adc_read : adc_read;
+
+	int tmpInt1 = tmpVal;                  // Get the integer (678).
+	float tmpFrac = tmpVal - tmpInt1;      // Get fraction (0.0123).
+	int tmpInt2 = trunc(tmpFrac * 1000);  // Turn into integer (123).
+
+// Print as parts, note that you need 0-padding for fractional bit.
+
+	sprintf (str, "%s%d.%d\n", tmpSign, tmpInt1, tmpInt2);
+	for (int i = 0; i < strlen(str); i++)
 	{
-		LCDWriteByte(LCD_DR, buffer[i]);
+		LCDWriteByte(LCD_DR, str[i]);
 	}
 	
+}
+
+void LCDWriteInt(int data)
+{
+	char str[10];
+	sprintf (str, "%d", data);
+	for (int i = 0; i < strlen(str); i++)
+	{
+		LCDWriteByte(LCD_DR, str[i]);
+	}
 }
