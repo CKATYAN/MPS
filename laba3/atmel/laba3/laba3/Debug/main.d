@@ -12,7 +12,8 @@ main.d main.o: .././main.c \
  d:\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\avr\lock.h \
  d:\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\util\delay.h \
  d:\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\util\delay_basic.h \
- d:\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\math.h .././LCD.h
+ d:\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\math.h .././LCD.h \
+ .././TCN75.h
 
 d:\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\avr\io.h:
 
@@ -43,3 +44,5 @@ d:\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\util\delay_basic.h:
 d:\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\math.h:
 
 .././LCD.h:
+
+.././TCN75.h:

@@ -8,7 +8,8 @@
 #include <avr/io.h>
 #include <util/delay.h>
 #include "LCD.h"
-#define TCN75ADDRES 0x7
+#include "TCN75.h"
+#define TCN75ADDRES 0x4
 
 int main(void)
 {
@@ -16,14 +17,14 @@ int main(void)
 	
     while (1) 
     {
+		//TCN75Config(TCN75ADDRES);
 		LCDKursorPosihin(0,0);
-//		LDCWriteStr("Temp = ");
-		
-//		LCDWriteInt((int)(TCN75ReadTemp(TCN75ADDRES)>>8));
+		LCDWriteStr("Temp = ");
+		LCDWriteInt((int)(TCN75ReadTemp(TCN75ADDRES)>>8));
 		LCDWriteStr(";   ");
-		LCDWriteFloat(15.75);
-		LCDWriteInt(1150);
-		_delay_ms(500);
+		//LCDWriteFloat(15.75);
+		//LCDWriteInt(1150);
+		_delay_ms(300);
     }
 }
 

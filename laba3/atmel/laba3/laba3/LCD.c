@@ -85,9 +85,7 @@ void LCDWriteFloat(float adc_read)
 void LCDWriteInt(int data)
 {
 	char str[10];
-	sprintf (str, "%d", data);
+	sprintf(str, "%d", data);
 	for (int i = 0; i < strlen(str); i++)
-	{
-		LCDWriteByte(LCD_DR, str[i]);
-	}
+	LCDWriteByte(LCD_DR, str[i]);
 }
