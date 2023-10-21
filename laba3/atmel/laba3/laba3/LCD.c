@@ -1,6 +1,7 @@
 #include <util/delay.h>
 #include <avr/io.h>
 #include <stdio.h>
+#include <math.h>
 
 #include "LCD.h"
 
@@ -72,14 +73,13 @@ void LCDWriteFloat(float adc_read)
 	float tmpFrac = tmpVal - tmpInt1;      // Get fraction (0.0123).
 	int tmpInt2 = trunc(tmpFrac * 1000);  // Turn into integer (123).
 
-// Print as parts, note that you need 0-padding for fractional bit.
+	// Print as parts, note that you need 0-padding for fractional bit.
 
 	sprintf (str, "%s%d.%d\n", tmpSign, tmpInt1, tmpInt2);
 	for (int i = 0; i < strlen(str); i++)
 	{
 		LCDWriteByte(LCD_DR, str[i]);
 	}
-	
 }
 
 void LCDWriteInt(int data)
@@ -88,4 +88,29 @@ void LCDWriteInt(int data)
 	sprintf(str, "%d", data);
 	for (int i = 0; i < strlen(str); i++)
 	LCDWriteByte(LCD_DR, str[i]);
+}
+
+void LCDWriteBinary(int data)
+{
+	char str[100];
+	
+	char *sign = ((data >> 8) & 0b10000000) ? "-" : "";
+	float value;
+	
+	data = data >> 4;
+	for (int i = -4; i < 7; i++)
+	{
+		value += (data & 1) * pow(2, i);
+		data >>= 1;
+	}
+		
+	int tmpInt1 = value;                  // Get the integer (678).
+	float tmpFrac = value - tmpInt1;      // Get fraction (0.0123).
+	int tmpInt2 = trunc(tmpFrac * 100);  // Turn into integer (123).
+		
+	sprintf (str, "%s%d.%d", sign, tmpInt1, tmpInt2);
+	for (int i = 0; i < strlen(str); i++)
+	{
+		LCDWriteByte(LCD_DR, str[i]);
+	}
 }

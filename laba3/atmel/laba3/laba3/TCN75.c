@@ -5,10 +5,18 @@
 
 static uint8_t TWIReadWriteByte(_Sequence sequence, uint8_t data);
 
+void TCN75Config(uint16_t addres)
+{	
+	TWIReadWriteByte(TWI_Sequence_Start, addres);
+	TWIReadWriteByte(TWI_Sequence_Body_ACK,0b00000001);
+	TWIReadWriteByte(TWI_Sequence_Body_NAK,0b01000000);
+	TWIReadWriteByte(TWI_Sequence_Stop,0);
+}
+
 uint16_t TCN75ReadTemp(uint8_t addres)
-{
-	
+{	
 	addres=TCN75_ADDRES_PREFIX|(addres<<1);
+	TCN75Config(addres);
 	
 	TWIReadWriteByte(TWI_Sequence_Start,addres);
 	TWIReadWriteByte(TWI_Sequence_Body_NAK,0);

@@ -21,5 +21,4 @@ typedef enum _Sequence
 }_Sequence;
 
 uint16_t TCN75ReadTemp(uint8_t adres);
-void TCN75Config(uint8_t address);
 #endif
