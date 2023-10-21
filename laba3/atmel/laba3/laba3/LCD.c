@@ -73,8 +73,7 @@ void LCDWriteFloat(float data)
 	float floatPart = data - integerPart;
 	int hiddenFloat = trunc(floatPart * 100);
 
-
-	sprintf (str, "%s%d.%d", sign, integerPart, hiddenFloat);
+	sprintf (str, "%s%d.%02d", sign, integerPart, hiddenFloat);
 	for (int i = 0; i < strlen(str); i++)
 	{
 		LCDWriteByte(LCD_DR, str[i]);
@@ -91,6 +90,21 @@ void LCDWriteInt(int data)
 	}
 }
 
+void LCDWriteBinary(int data)
+{
+	for (int i = 0; i < 12; i++)
+	{
+		char bit = (data & 0x8000) ? '1' : '0';
+		data <<= 1;
+
+		LCDWriteByte(LCD_DR, bit);
+		if (i == 7) 
+		{
+			LCDWriteByte(LCD_DR, '.');
+		}
+	}
+}
+
 void LCDWriteTwoComplement(int data)
 {
 	data >>= 4;
@@ -102,13 +116,15 @@ void LCDWriteTwoComplement(int data)
 		data = (~data) & 0xFFF;
 	}
 
-	float value;
-	for (int i = -4; i < 8; i++)
+	float floatPart = 0.0;
+	for (int i = -4; i < 0; i++)
 	{
-		value += (data & 1) * pow(2, i);
+		floatPart += (data & 1) * pow(2, i);
 		data >>= 1;
 	}
-	
+	int integerPart = data & 0xFF;
+
+	float value = integerPart + floatPart;
 	if (isNegative) 
 	{
 		value = -value;
