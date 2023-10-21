@@ -9,14 +9,38 @@ void TCN75Config(uint16_t addres)
 {	
 	TWIReadWriteByte(TWI_Sequence_Start, addres);
 	TWIReadWriteByte(TWI_Sequence_Body_ACK,0b00000001);
-	TWIReadWriteByte(TWI_Sequence_Body_NAK,0b01000000);
+	TWIReadWriteByte(TWI_Sequence_Body_NAK,0b01000010);
 	TWIReadWriteByte(TWI_Sequence_Stop,0);
 }
+
+
+void TCN75Thyst(uint16_t addres)
+{
+	TWIReadWriteByte(TWI_Sequence_Start, addres);
+	TWIReadWriteByte(TWI_Sequence_Body_ACK,0b00000010);
+	TWIReadWriteByte(TWI_Sequence_Body_NAK,0x04);
+	TWIReadWriteByte(TWI_Sequence_Stop,0);
+}
+
+void TCN75Tset(uint16_t addres)
+{
+	TWIReadWriteByte(TWI_Sequence_Start, addres);
+	TWIReadWriteByte(TWI_Sequence_Body_ACK,0b00000011);
+	TWIReadWriteByte(TWI_Sequence_Body_NAK,0x04);
+	TWIReadWriteByte(TWI_Sequence_Stop,0);
+}
+
+
+
 
 uint16_t TCN75ReadTemp(uint8_t addres)
 {	
 	addres=TCN75_ADDRES_PREFIX|(addres<<1);
 	TCN75Config(addres);
+	TCN75Thyst(addres);
+	TCN75Tset(addres);
+	
+	
 	
 	TWIReadWriteByte(TWI_Sequence_Start,addres);
 	TWIReadWriteByte(TWI_Sequence_Body_NAK,0);
