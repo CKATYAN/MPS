@@ -73,7 +73,7 @@ void LCDWriteFloat(float data)
 	float floatPart = data - integerPart;
 	int hiddenFloat = trunc(floatPart * 100);
 
-	sprintf (str, "%s%d.%02d", sign, integerPart, hiddenFloat);
+	sprintf (str, "%s%d.%02d ", sign, integerPart, hiddenFloat);
 	for (int i = 0; i < strlen(str); i++)
 	{
 		LCDWriteByte(LCD_DR, str[i]);
