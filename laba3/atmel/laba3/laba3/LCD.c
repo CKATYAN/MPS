@@ -62,20 +62,19 @@ void LCDWriteStr(char *data)
 		LCDWriteByte(LCD_DR, data[i]);
 }
 
-void LCDWriteFloat(float adc_read)
+void LCDWriteFloat(float data)
 {
 	char str[100];
 
-	char *tmpSign = (adc_read < 0) ? "-" : "";
-	float tmpVal = (adc_read < 0) ? -adc_read : adc_read;
+	char *sign = (data < 0) ? "-" : "";
+	data = fabs(data);
+	
+	int integerPart = (int)data;
+	float floatPart = data - integerPart;
+	int hiddenFloat = trunc(floatPart * 100);
 
-	int tmpInt1 = tmpVal;                  // Get the integer (678).
-	float tmpFrac = tmpVal - tmpInt1;      // Get fraction (0.0123).
-	int tmpInt2 = trunc(tmpFrac * 1000);  // Turn into integer (123).
 
-	// Print as parts, note that you need 0-padding for fractional bit.
-
-	sprintf (str, "%s%d.%d\n", tmpSign, tmpInt1, tmpInt2);
+	sprintf (str, "%s%d.%d", sign, integerPart, hiddenFloat);
 	for (int i = 0; i < strlen(str); i++)
 	{
 		LCDWriteByte(LCD_DR, str[i]);
@@ -87,30 +86,33 @@ void LCDWriteInt(int data)
 	char str[10];
 	sprintf(str, "%d", data);
 	for (int i = 0; i < strlen(str); i++)
-	LCDWriteByte(LCD_DR, str[i]);
+	{
+		LCDWriteByte(LCD_DR, str[i]);
+	}
 }
 
-void LCDWriteBinary(int data)
+void LCDWriteTwoComplement(int data)
 {
-	char str[100];
+	data >>= 4;
+	int isNegative = data & 0x800;
 	
-	char *sign = ((data >> 8) & 0b10000000) ? "-" : "";
+	if (isNegative)
+	{
+		data--;
+		data = (~data) & 0xFFF;
+	}
+
 	float value;
-	
-	data = data >> 4;
-	for (int i = -4; i < 7; i++)
+	for (int i = -4; i < 8; i++)
 	{
 		value += (data & 1) * pow(2, i);
 		data >>= 1;
 	}
-		
-	int tmpInt1 = value;                  // Get the integer (678).
-	float tmpFrac = value - tmpInt1;      // Get fraction (0.0123).
-	int tmpInt2 = trunc(tmpFrac * 100);  // Turn into integer (123).
-		
-	sprintf (str, "%s%d.%d", sign, tmpInt1, tmpInt2);
-	for (int i = 0; i < strlen(str); i++)
+	
+	if (isNegative) 
 	{
-		LCDWriteByte(LCD_DR, str[i]);
+		value = -value;
 	}
+
+	LCDWriteFloat(value);
 }
