@@ -16,10 +16,11 @@
 #define MAX_T 0b00000010
 #define MIN_T 0b00000001
 
-bool stop_flag = false;
+bool is_interrupted = false;
 
-ISR(INT0_vect){ // прерывание кнопки
-	stop_flag = true;
+ISR(INT0_vect)
+{
+	is_interrupted = true;
 	_delay_ms(60);
 }
 
@@ -41,6 +42,7 @@ int main(void)
 		LCDWriteStr("Temp = ");
 		float TCN75_temp = LCDWriteTwoComplement((int)(TCN75ReadTemp(TCN75ADDRES, MAX_T, MIN_T)));
 		LCDWriteStr(";   ");
+
 		LCDKursorPosihin(1,0);
 		LCDWriteStr("MAX=");
 		LCDWriteInt(MAX_T);
@@ -48,11 +50,24 @@ int main(void)
 		LCDWriteStr("MIN=");
 		LCDWriteInt(MIN_T);
 		
-		if (stop_flag) PORTB = 0xFF;
-		else PORTB = 0x00;
-		
 		_delay_ms(300);
-		
+
+		if (is_interrupted)
+		{
+			if (TCN75_temp > MAX_T)
+			{ 
+				PORTB = 0xFF;
+				continue;
+			}
+
+			if (TCN75_temp < MIN_T)
+			{
+				PORTB = 0x00;
+				continue;
+			}
+
+			is_interrupted = false;
+		}
     }
 }
 
