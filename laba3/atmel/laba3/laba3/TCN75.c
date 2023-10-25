@@ -10,7 +10,7 @@ void TCN75Config(uint16_t addres)
 {	
 	TWIReadWriteByte(TWI_Sequence_Start, addres);
 	TWIReadWriteByte(TWI_Sequence_Body_ACK,0b00000001);
-	TWIReadWriteByte(TWI_Sequence_Body_NAK,0b01000010);
+	TWIReadWriteByte(TWI_Sequence_Body_NAK,0b01000110);
 	TWIReadWriteByte(TWI_Sequence_Stop,0);
 }
 
@@ -19,7 +19,8 @@ void TCN75Thyst(uint16_t addres, int MIN_T)
 {
 	TWIReadWriteByte(TWI_Sequence_Start, addres);
 	TWIReadWriteByte(TWI_Sequence_Body_ACK, 0b00000010);
-	TWIReadWriteByte(TWI_Sequence_Body_NAK,MIN_T);
+	TWIReadWriteByte(TWI_Sequence_Body_ACK, MIN_T);
+	TWIReadWriteByte(TWI_Sequence_Body_NAK, 0b00000000);
 	TWIReadWriteByte(TWI_Sequence_Stop,0);
 }
 
