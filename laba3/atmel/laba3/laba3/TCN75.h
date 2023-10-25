@@ -11,7 +11,6 @@
 
 #include <avr/io.h>
 #include "LCD.h"
-
 typedef enum _Sequence
 {
 	TWI_Sequence_Start=0,
@@ -20,5 +19,5 @@ typedef enum _Sequence
 	TWI_Sequence_Stop
 }_Sequence;
 
-uint16_t TCN75ReadTemp(uint8_t adres);
+uint16_t TCN75ReadTemp(uint8_t addres, int MAX_T, int MIN_T);
 #endif

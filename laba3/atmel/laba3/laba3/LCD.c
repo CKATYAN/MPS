@@ -105,7 +105,7 @@ void LCDWriteBinary(int data)
 	}
 }
 
-void LCDWriteTwoComplement(int data)
+float LCDWriteTwoComplement(int data)
 {
 	data >>= 4;
 	int isNegative = data & 0x800;
@@ -129,6 +129,7 @@ void LCDWriteTwoComplement(int data)
 	{
 		value = -value;
 	}
-
+	
 	LCDWriteFloat(value);
+	return value;
 }

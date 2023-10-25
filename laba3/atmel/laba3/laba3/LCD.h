@@ -14,6 +14,6 @@ void LCDWriteStr(char *data);
 void LCDWriteInt(int data);
 void LCDWriteFloat(float data);
 void LCDWriteBinary(int data);
-void LCDWriteTwoComplement(int data);
+float LCDWriteTwoComplement(int data);
 
 #endif /* LCD_H_ */
