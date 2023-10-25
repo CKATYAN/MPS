@@ -32,7 +32,7 @@ int main(void)
 		LCDKursorPosihin(1,0);
 		LCDWriteStr("MAX=");
 		LCDWriteInt(MAX_T);
-		LCDWriteStr("   ");
+		LCDWriteStr("  ");
 		LCDWriteStr("MIN=");
 		LCDWriteInt(MIN_T);
 		if (TCN75_temp > MAX_T)

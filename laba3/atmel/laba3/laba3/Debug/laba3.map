@@ -666,7 +666,7 @@ END GROUP
  *(.fini0)
                 0x0000146a                _etext = .
 
-.data           0x00800060       0x28 load address 0x0000146a
+.data           0x00800060       0x26 load address 0x0000146a
                 0x00800060                PROVIDE (__data_start, .)
  *(.data)
  *(.data*)
@@ -674,31 +674,30 @@ END GROUP
  *(.rodata)
  *(.rodata*)
  .rodata.str1.1
-                0x00800060       0x10 LCD.o
-                                 0x11 (size before relaxing)
+                0x00800060        0xf LCD.o
+                                 0x10 (size before relaxing)
  .rodata.str1.1
-                0x00800070       0x17 main.o
-                                 0x1b (size before relaxing)
+                0x0080006f       0x17 main.o
+                                 0x1a (size before relaxing)
  *(.gnu.linkonce.r*)
-                0x00800088                . = ALIGN (0x2)
- *fill*         0x00800087        0x1 
-                0x00800088                _edata = .
-                0x00800088                PROVIDE (__data_end, .)
+                0x00800086                . = ALIGN (0x2)
+                0x00800086                _edata = .
+                0x00800086                PROVIDE (__data_end, .)
 
-.bss            0x00800088        0x0
+.bss            0x00800086        0x0
                 [!provide]                PROVIDE (__bss_start, .)
  *(.bss)
  *(.bss*)
  *(COMMON)
                 [!provide]                PROVIDE (__bss_end, .)
                 0x0000146a                __data_load_start = LOADADDR (.data)
-                0x00001492                __data_load_end = (__data_load_start + SIZEOF (.data))
+                0x00001490                __data_load_end = (__data_load_start + SIZEOF (.data))
 
-.noinit         0x00800088        0x0
+.noinit         0x00800086        0x0
                 [!provide]                PROVIDE (__noinit_start, .)
  *(.noinit*)
                 [!provide]                PROVIDE (__noinit_end, .)
-                0x00800088                _end = .
+                0x00800086                _end = .
                 [!provide]                PROVIDE (__heap_start, .)
 
 .eeprom         0x00810000        0x0
