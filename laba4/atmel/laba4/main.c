@@ -9,10 +9,27 @@
 #include "task.h"
 #include <avr/io.h>
 #include <avr/interrupt.h>
+#include <stdbool.h>
 
 #include "LCD.h"
 #include "TIME.h"
 #include "DATA.h"
+
+
+#define LEFT 0b01111111
+#define RIGHT 0b10111111
+#define CHANGING 0b11011111
+#define CHANGING_UP 0b11111101
+#define CHANGING_DOWN 0b11111110
+
+int positionOnDisplay = 0;
+int shiftCursorOnDisplay;
+bool isFirstLine;
+bool isGoingLeft = true;
+bool stop_flag = false;
+bool isMovingToTheRIght;
+int flagMoovingSpeed = 0;
+
 
 void vClockHandler (void *pvParameters);
 
@@ -28,21 +45,20 @@ int main(void)
 
 void vApplicationIdleHook() {} // ???????? ??? idle ??????
 
-void vClockHandler(void *pvParameters)
-{
-	initTimerCounter();
+void vClockHandler(void *pvParameters) 
+{ 
+    initTimerCounter(); 
 
-	LCDInit();
-	nullifyTimeArray();
-	nullifyDataArray();
-
-	int positionOnDisplay = 0;
-	while (1)
-	{
-		displayData(positionOnDisplay);
-		displayTime(positionOnDisplay);
-	}
-	vTaskDelete(NULL);
+    LCDInit(); 
+    nullifyTimeArray(); 
+    nullifyDataArray(); 
+    while (1) 
+    { 
+        computePosition(); 
+        displayTime(positionOnDisplay); 
+        displayData(positionOnDisplay); 
+        vTaskDelay(100); 
+    } 
 }
 
 void initTimerCounter() // ????????????? ??????
@@ -63,4 +79,38 @@ void initTimerCounter() // ????????????? ??????
 ISR(TIMER1_COMPB_vect) { // ?????????? ??????-????????
 	computeTimeArray();
 	TCNT1 = 0;
+}
+
+
+void computePosition()
+{
+	switch(PIND)
+	{
+		case CHANGING:
+		flagMoovingSpeed = 0;
+		break;
+		case RIGHT:
+		flagMoovingSpeed = 1;
+		break;
+		case LEFT:
+		flagMoovingSpeed = 2;
+		break;
+	}
+	
+	switch(flagMoovingSpeed)
+	{
+		case 0:
+		 vTaskDelay(150);
+		break;
+		case 1:
+		 vTaskDelay(500);
+		break;
+		case 2:
+		 vTaskDelay(1000);
+		break;
+	}
+	if (positionOnDisplay == 5 || positionOnDisplay == 0)
+	isGoingLeft = !isGoingLeft;
+
+	isGoingLeft ? positionOnDisplay-- : positionOnDisplay++;
 }
