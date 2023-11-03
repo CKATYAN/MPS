@@ -15,7 +15,6 @@
 #include "TIME.h"
 #include "DATA.h"
 
-
 #define LEFT 0b01111111
 #define RIGHT 0b10111111
 #define CHANGING 0b11011111
@@ -29,13 +28,15 @@ bool isGoingLeft = true;
 bool stop_flag = false;
 bool isMovingToTheRIght;
 int flagMoovingSpeed = 0;
+int counter = 0;
+int tick = 0;
 
 
-void vClockHandler (void *pvParameters);
+void vDisplayClockTask (void *pvParameters);
 
 int main(void)
 {
-	xTaskCreate(vClockHandler, (char*) "Task", configMINIMAL_STACK_SIZE, NULL, tskIDLE_PRIORITY + 1, NULL);
+	xTaskCreate(vDisplayClockTask, (char*) "DisplayClockTask", configMINIMAL_STACK_SIZE, NULL, tskIDLE_PRIORITY + 1, NULL);
 	vTaskStartScheduler();
     /* Replace with your application code */
     while (1)
@@ -43,44 +44,30 @@ int main(void)
     }
 }
 
-void vApplicationIdleHook() {} // ???????? ??? idle ??????
+void vApplicationIdleHook() {} // empty func to rid of idle-thread
 
-void vClockHandler(void *pvParameters) 
-{ 
-    initTimerCounter(); 
-
+void vDisplayClockTask(void *pvParameters)
+{	
     LCDInit(); 
     nullifyTimeArray(); 
-    nullifyDataArray(); 
+	nullifyDataArray();
+
     while (1) 
-    { 
+    {
         computePosition(); 
         displayTime(positionOnDisplay); 
-        displayData(positionOnDisplay); 
-        vTaskDelay(100); 
-    } 
+        displayData(positionOnDisplay);
+
+		if(xTaskGetTickCount() % 1000 == 0)
+		{
+			computeTimeArray();
+			// 1 - why this does not work (too fast?)
+			// 2 - why pdMS_TO_TICK give me invalid value
+		}
+		
+    }
+	vTaskDelete(NULL);
 }
-
-void initTimerCounter() // ????????????? ??????
-{
-	TCNT1 = 0;
-	TCCR1B |= (1<<CS10) | (1<<CS11) | (0<<CS12);
-	TIMSK |= (1 << OCIE1B);
-	OCR1BH = 0b00111101;
-	OCR1BL = 0b00001001;
-
-	//fast mode: 1 second = 1 hour
-	//OCR1BH = 0b00000001;
-	//OCR1BL = 0b00000100;
-	sei();
-}
-
-
-ISR(TIMER1_COMPB_vect) { // ?????????? ??????-????????
-	computeTimeArray();
-	TCNT1 = 0;
-}
-
 
 void computePosition()
 {
