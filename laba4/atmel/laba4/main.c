@@ -36,24 +36,17 @@ int tick = 0;
 
 
 void init_timer(){
-	    // Установите режим таймера и предделитель
-    TCCR0 |= (1 << WGM01) | (1 << CS02) | (1 << CS00);
-    
-    // Установите начальное значение счетчика
-    TCNT0 = 0;
-    
-    // Включите прерывание по переполнению таймера
-    TIMSK |= (1 << TOIE0);
-    
-    // Разрешите глобальные прерывания
+    TCNT1 = 0;
+    TCCR1B |= (1<<CS10) | (0<<CS11) | (1<<CS12); // установка делителя частоты в 1024
+    TIMSK |= (1 << OCIE1B);
+    OCR1BH = 0b00111101;
+    OCR1BL = 0b00001001;
     sei();
 }
 
-ISR(TIMER0_OVF_vect) {
-    // Ваш код обработки прерывания
-    //computeTimeArray();
-    // Очистите флаг прерывания
-    TIFR |= (1 << TOV0);
+ISR(TIMER1_COMPB_vect) {
+   	computeTimeArray();
+   	TCNT1 = 0;
 }
 
 
@@ -84,31 +77,13 @@ void vDisplayClockTask(void *pvParameters)
     LCDInit(); 
     nullifyTimeArray(); 
 	nullifyDataArray();
-
+	init_timer();
     while (1) 
     {
-		
-		init_timer();
-		//vTaskStartScheduler();
-		
-		
-		
-		
         computePosition(); 
         displayTime(positionOnDisplay); 
         displayData(positionOnDisplay);
-		counter = xTaskGetTickCount();
-		tick = counter % 1000;
-		//if(tick >= 0 && tick <= 45)
-		//{
-			//computeTimeArray();
-			//// 1 - why this does not work (too fast?)
-			//// 2 - why pdMS_TO_TICK give me invalid value
-		//}
-		//
-		
-	
-		
+		//counter = xTaskGetTickCount();
     }
 	vTaskDelete(NULL);
 }
