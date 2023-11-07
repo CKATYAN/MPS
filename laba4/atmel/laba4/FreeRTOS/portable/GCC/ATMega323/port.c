@@ -49,9 +49,9 @@ Changes from V2.6.0
 
 /* Hardware constants for timer 1. */
 #define portCLEAR_COUNTER_ON_MATCH				( ( uint8_t ) 0x08 )
-#define portPRESCALE_64							( ( uint8_t ) 0x03 )
+#define portPRESCALE_64							( ( uint8_t ) 0x04 )
 #define portCLOCK_PRESCALER						( ( uint32_t ) 64 )
-#define portCOMPARE_MATCH_A_INTERRUPT_ENABLE	( ( uint8_t ) 0x10 )
+#define portCOMPARE_MATCH_A_INTERRUPT_ENABLE	( ( uint8_t ) 0x80 )
 
 /*-----------------------------------------------------------*/
 
@@ -378,14 +378,16 @@ uint8_t ucHighByte, ucLowByte;
 	/* Setup compare match value for compare match A.  Interrupts are disabled 
 	before this is called so we need not worry here. */
 	ucLowByte = ( uint8_t ) ( ulCompareMatch & ( uint32_t ) 0xff );
-	ulCompareMatch >>= 8;
-	ucHighByte = ( uint8_t ) ( ulCompareMatch & ( uint32_t ) 0xff );
-	OCR1AH = ucHighByte;
-	OCR1AL = ucLowByte;
+	//ulCompareMatch >>= 8;
+	//ucHighByte = ( uint8_t ) ( ulCompareMatch & ( uint32_t ) 0xff );
+	//OCR1AH = ucHighByte;
+	//OCR1AL = ucLowByte;
+	OCR2 = ucLowByte;
 
 	/* Setup clock source and compare match behaviour. */
 	ucLowByte = portCLEAR_COUNTER_ON_MATCH | portPRESCALE_64;
-	TCCR1B = ucLowByte;
+	//TCCR1B = ucLowByte;
+	TCCR2 = ucLowByte;
 
 	/* Enable the interrupt - this is okay as interrupt are currently globally
 	disabled. */
@@ -402,8 +404,8 @@ uint8_t ucHighByte, ucLowByte;
 	 * the context is saved at the start of vPortYieldFromTick().  The tick
 	 * count is incremented after the context is saved.
 	 */
-	void TIMER1_COMPA_vect( void ) __attribute__ ( ( signal, naked ) );
-	void TIMER1_COMPA_vect( void )
+	void TIMER2_COMP_vect( void ) __attribute__ ( ( signal, naked ) );
+	void TIMER2_COMP_vect( void )
 	{
 		vPortYieldFromTick();
 		asm volatile ( "reti" );
